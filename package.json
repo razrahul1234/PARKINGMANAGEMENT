@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "test": "mocha 'tests/**/*.js' --recursive --reporter spec --timeout 60000 --exit",
-    "test-with-coverage": "nyc --reporter=html --reporter=text mocha 'tests/**/*.js'"
+    "test-with-coverage": "nyc --reporter=html --reporter=text mocha 'tests/**/*.js' --exit"
   },
   "dependencies": {
     "chai": "^4.3.7",
