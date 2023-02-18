@@ -12,7 +12,7 @@ describe('/parking route', function () {
     const cluster = "cluster0.ri2w0";
     const dbname = "parkingmanagement";
     this.timeout(20000);
-    before(async () => {
+    beforeEach(async () => {
         await mongoose.connect(
             `mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority`, 
             {
@@ -22,7 +22,7 @@ describe('/parking route', function () {
           );
     });
 
-    after(async () => {
+    afterEach(async () => {
         await mongoose.connection.close();
     });
 

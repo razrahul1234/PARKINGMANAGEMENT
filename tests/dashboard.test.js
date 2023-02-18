@@ -1,12 +1,12 @@
-const booking = require("../routes/bookingRoute");
+const dashboard = require("../routes/dashboardRoute");
 const mongoose = require("mongoose");
 const assert = require('assert');
 const expect = require('chai').expect
 const request = require('supertest');
 const app = require('../app')
-app.use('/booking', booking);
+app.use('/common', dashboard);
 
-describe('/booking route', function () {
+describe('/dashboard route', function () {
     const username = "academypurpose";
     const password = "1234567890";
     const cluster = "cluster0.ri2w0";
@@ -28,23 +28,26 @@ describe('/booking route', function () {
 
     it('should return status code', function (done) {
         request(app)
-            .post('/booking/addBooking')
-            .send({ size_of_slots: "medium" })
+            .get('/common/dashboard')
             .then(function (response) {
                 assert.equal(response.status, 200);
             })
             done();
     });
 
-    it('should return status on releasing spot', function (done) {
+    it('should return parkingManagementDetails', function (done) {
         request(app)
-            .post('/booking/releaseBooking')
-            .send({ booking_id: 1 })
+            .get('/common/parkingManagementDetails')
             .then(function (response) {
                 assert.equal(response.status, 200);
+                expect(response).to.have.own.property('parkingLotData');
+                expect(response).to.have.own.property('floorData');
+                expect(response).to.have.own.property('slotData');
+                expect(response).to.have.own.property('bookingData');
             })
 
             done();
     });
 
 });
+
