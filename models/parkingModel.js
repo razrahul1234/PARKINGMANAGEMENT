@@ -39,7 +39,8 @@ const floorDetailsSchema = new mongoose.Schema({
     //     type: Number
     // },
     // number_of_floor_added: {
-    //     type: Number
+    //     type: Number,
+    //     required: true
     // },
     floor_number: {
         type: Number,

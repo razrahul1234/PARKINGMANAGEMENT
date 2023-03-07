@@ -6,23 +6,23 @@ var router = express.Router();
 router.post('/addBooking', async function(req, res, next) {
   try {
     let size_of_slots = req.body.size_of_slots;
-    let slotdetails = await findSlots(size_of_slots);
+    let slotdetails = await findSlots(req,size_of_slots);
 
     if(slotdetails && slotdetails.length>0){
       await bookingAdded(req, res, next, slotdetails)
     } else if(size_of_slots === 'small'){
            size_of_slots = "medium";
-           slotdetails = await findSlots(size_of_slots);
+           slotdetails = await findSlots(req,size_of_slots);
            if(slotdetails && slotdetails.length>0){
                await bookingAdded(req, res, next, slotdetails)
            } else {
                size_of_slots = "large";
-               slotdetails = await findSlots(size_of_slots);
+               slotdetails = await findSlots(req,size_of_slots);
                if(slotdetails && slotdetails.length>0){
                 await bookingAdded(req, res, next, slotdetails)
                } else {
                   size_of_slots = "x-large";
-                  slotdetails = await findSlots(size_of_slots);
+                  slotdetails = await findSlots(req,size_of_slots);
                   if(slotdetails && slotdetails.length>0){
                     await bookingAdded(req, res, next, slotdetails)
                   } else {
@@ -33,12 +33,12 @@ router.post('/addBooking', async function(req, res, next) {
            }
       } else if(size_of_slots === "medium") {
             size_of_slots = "large";
-            slotdetails = await findSlots(size_of_slots);
+            slotdetails = await findSlots(req,size_of_slots);
             if(slotdetails && slotdetails.length>0){
               await bookingAdded(req, res, next, slotdetails)
             } else {
               size_of_slots = "x-large";
-              slotdetails = await findSlots(size_of_slots);
+              slotdetails = await findSlots(req,size_of_slots);
               if(slotdetails && slotdetails.length>0){
                await bookingAdded(req, res, next, slotdetails)
               } else {
@@ -47,7 +47,7 @@ router.post('/addBooking', async function(req, res, next) {
             }
       } else if(size_of_slots === "large"){
               size_of_slots = "x-large";
-              slotdetails = await findSlots(size_of_slots);
+              slotdetails = await findSlots(req,size_of_slots);
               if(slotdetails && slotdetails.length>0){
                 await bookingAdded(req, res, next, slotdetails)
               } else {
@@ -69,7 +69,7 @@ router.post('/releaseBooking', async function(req, res, next) {
   //  await FloorDetailsModel.deleteMany({})
   //  res.json("collection deleted");
   try{
-     const bookingdetails = await BookingDetailsModel.findOneAndUpdate({booking_id: req.body.booking_id }, {check_out_time: new Date()});
+     const bookingdetails = await BookingDetailsModel.findOneAndUpdate({booking_id: req.body.booking_id, parking_lot_id: req.body.parking_lot_id }, {check_out_time: new Date()});
      console.log(bookingdetails);
     //  bookingdetails.then(async (booking) => {
        const slot = await SlotDetailsModel.findOneAndUpdate({slot_id: bookingdetails.slot_id }, {status: 'available' });
@@ -83,8 +83,8 @@ router.post('/releaseBooking', async function(req, res, next) {
 
 
 
-async function findSlots(size){
-  const slotdetails = await SlotDetailsModel.find({size_of_slots: size, status: 'available' });
+async function findSlots(req,size){
+  const slotdetails = await SlotDetailsModel.find({size_of_slots: size, status: 'available', parking_lot_id: req.body.parking_lot_id });
   return slotdetails;
 }
 
